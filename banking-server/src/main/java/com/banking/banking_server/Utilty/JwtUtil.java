@@ -1,17 +1,17 @@
-package com.banking.banking_server.Util;
+package com.banking.banking_server.Utilty;
 
+import com.banking.banking_server.Models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 @Component
@@ -34,7 +34,7 @@ public class JwtUtil {
     public  String TokenGeneration(UserDetails userDetails)
     {
         Map<String, Object> claims=new HashMap<>();
-        claims.put("userID", ((User)userDetails).getUserId());
+        claims.put("userID", ((User)userDetails).getUserid());
         return  generateToken(claims, userDetails.getUsername());
     }
 
@@ -54,11 +54,16 @@ public class JwtUtil {
         return  getClaimFromToken(token , Claims::getExpiration);
     }
 
+    public boolean isTokenExpired(String token)
+    {
+        final  Date expiration=getExpirationDateFromToken(token);
+        return expiration.before(new Date());
+    }
 
 
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final  String userName=getUsernameFromToken(token);
 
-
-
-
-
+        return (userName.equals(userDetails.getUsername())   && !isTokenExpired(token));
+    }
 }
