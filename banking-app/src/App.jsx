@@ -1,6 +1,11 @@
+import { Route, Routes } from 'react-router-dom';
+import LandingPage from './components/LandingPage/LandingPage';
 export default function App(){
 
     return(
-        <Route Tolink ="\" element ={<LandingPage/>}></Route>
+          <Routes>
+          <Route path='/'  element={<LandingPage/>} />
+          </Routes>
+        
     )
 }
